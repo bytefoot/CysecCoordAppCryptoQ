@@ -70,8 +70,8 @@ Exploit the system to retrieve the flag.
 ---
 
 ## **Submission**
+Collect your flag via:
 ```bash
-# Submit solutions via:
 curl -X POST {API_ENDPOINT}/task{1|2} \
   -H "Content-Type: application/json" \
   -d '{"frame":"YOUR_HEX_DATA"}'
@@ -79,6 +79,10 @@ curl -X POST {API_ENDPOINT}/task{1|2} \
 
 Your Api EndPoint is:
 ```https://a5o5alnqvhu4eleirjwu43u3hy0apxqu.lambda-url.eu-north-1.on.aws/```
+
+Include your flags in the application, followed by a writeup on your attack (As concise as possible).
+
+In case, you are stuck; just submit a writeup of the attacks tried (again i definitely don't want yapping).
 
 **Contact:**  
 Kevin Kinsey | CySec Strategist  
