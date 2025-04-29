@@ -84,6 +84,8 @@ Include your flags in the application, followed by a writeup on your attack (As 
 
 In case, you are stuck; just submit a writeup of the attacks tried (again i definitely don't want yapping).
 
-**Contact:**  
+## **Contact:**  
 Kevin Kinsey | CySec Strategist  
 📧 ep23b027@smail.iitm.ac.in | 📞 +91 6366577373
+
+Or do me one better; put it out in the Aspiring Group itself.
