@@ -1,3 +1,13 @@
+# Hi there,
+# You didn't run to ur momma looking at the README?
+# Hmm... Ballsy.
+# Okie... I shall help hereforth
+
+# Setup
+# ====================================================================================================
+# Okay so the below code is kinda useless for you
+# Skip reading till the next line made of '='
+
 from flask import Flask, request, jsonify
 import hmac
 import hashlib
@@ -37,22 +47,29 @@ def verify_hmac(ciphertext, received_hmac):
     h = hmac.new(config['TASK1_HMAC'], ciphertext, hashlib.sha256)
     return hmac.compare_digest(h.digest(), received_hmac)
 
-# ================== ROUTES ==================
+# ====================================================================================================
+# Task 1
 @app.route('/task1', methods=['POST'])
 def task1():
     try:
+        # Just retrieving data
         data = bytes.fromhex(request.json['frame'])
         if len(data) < 16 + 32:
             return jsonify({"error": "Frame too short"}), 400
 
+        # SPlitting into characteristic chunks
         iv, ciphertext, received_hmac = data[:16], data[16:-32], data[-32:]
         
+        # HMAC is used for message authentication
+        # Basically its used to protect against a middle man tampering with the message.
         if not verify_hmac(ciphertext, received_hmac):
             return jsonify({"result": "Invalid HMAC"}), 200
 
+        # Decryption
         cipher = AES.new(config['TASK1_KEY'], AES.MODE_CBC, iv=iv)
         plaintext = cipher.decrypt(ciphertext).decode("utf-8")
 
+        # Some validations on the data
         id = plaintext[:16]
         flag = plaintext[16:].lstrip("=")
         
@@ -62,28 +79,36 @@ def task1():
         ), 200
         
     except Exception as e:
+        # Bruh.. why u reading here? This not for you da.
         return jsonify({"error": str(e)}), 400
 
+# ====================================================================================================
+# Task 2
 @app.route('/task2', methods=['POST'])
 def task2():
     try:
+        # Just taking the data
         ciphertext = bytes.fromhex(request.json['frame'])
 
+        # Decrypting outer layer
         cipher2 = AES.new(config['TASK2_KEY2'], AES.MODE_CBC, iv=config['TASK2_IV2'])
         intermediate = cipher2.decrypt(ciphertext)
 
         id = intermediate[:16]
         intermediate = intermediate[16:]
 
+        # Verification of outer id
         if id != b'!ThisIsCorrect!!':
             return jsonify({"result": "Invalid ID", "flag": "Stoooopid kid"}), 200
         
+        # Decrypting inner layer
         cipher1 = AES.new(config['TASK2_KEY1'], AES.MODE_CBC, iv=config['TASK2_IV1'])
         plaintext = cipher1.decrypt(intermediate)
 
         stamp = plaintext[:16]
-        flag = plaintext[16:]\
+        flag = plaintext[16:]
 
+        # Verifying stamp (to make sure first block isnt changed)
         if stamp != b'!ArivoliIsBlack!':
             return jsonify({"result": "Invalid STAMP; must be \'!ArivoliIsBlack!\'", "flag": "Fundamental truth violated."}), 200
         
@@ -92,9 +117,11 @@ def task2():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+# ====================================================================================================
+# Code not meant for you kid.
+
 def lambda_handler(event, context):
     try:
-        # Parse API Gateway event
         body = event.get('body', '{}')
         if isinstance(body, str):
             try:
@@ -103,32 +130,28 @@ def lambda_handler(event, context):
                 body = {}
         
         headers = {k.lower(): v for k, v in event.get('headers', {}).items()}
-        
-        # Extract path from different possible locations in the event
+
         path = event.get('path', '')
         if not path:
             path = event.get('rawPath', '')
         path = path.split('/')[-1]  # Extract 'task1', 'task2', etc
-        
-        # Route to the appropriate function
+
         with app.test_request_context(
             path=event.get('path', '/task1' if path == 'task1' else '/task2'),
             method=event.get('httpMethod', 'POST'),
             headers=headers,
             json=body
         ):
-            # Explicitly push the context
+
             app.preprocess_request()
-            
-            # Dispatch based on path
+
             if path == 'task1':
                 response = task1()
             elif path == 'task2':
                 response = task2()
             else:
                 response = jsonify({"error": "Invalid endpoint"}), 404
-            
-            # Ensure response is in the correct format
+
             if isinstance(response, tuple):
                 response_body, status_code = response
             else:
@@ -148,6 +171,6 @@ def lambda_handler(event, context):
             'statusCode': 500,
             'body': json.dumps({'error': str(e)})
         }
-# Local development
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=3000)
