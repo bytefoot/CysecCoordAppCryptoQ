@@ -28,7 +28,7 @@ Exploit the system to retrieve the flag.
 
 ### Packet Structure
 ```
-[16 bytes IV] + [16×n bytes CBC(message + "!!ValidHeader!!")] + [32 bytes HMAC]
+[16 bytes IV] + [16×n bytes CBC("!!ValidHeader!!" + data)] + [32 bytes HMAC]
 ```
 ### Provided Frames
 **Valid Example (Hex):**  
@@ -55,6 +55,10 @@ Exploit the system to retrieve the flag.
 ### Encryption Process
 1. Add company stamp → Encrypt with AES-CBC (Key1 + IV1)
 2. Add ID header → Encrypt again with AES-CBC (Key2 + IV2)
+
+```
+ENC = CBC("!ThisIsCorrect!!" + CBC('!ArivoliIsBlack!' + data))
+```
 
 ### Provided Frames
 **Valid Example (Hex):**  
