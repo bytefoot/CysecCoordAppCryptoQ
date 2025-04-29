@@ -34,8 +34,11 @@ d74b31d112f54559e6f81a5ba0c6ec05831103bc512818ae07435344057f181bd6fa6043f7f0dda0
 ## **Submission**  
 ```bash
 # Submit your modified frames via:
-curl -X POST https://1wymyen3v6.execute-api.eu-north-1.amazonaws.com/Prod/%7Bproxy+%7D/task{1|2} -H "Content-Type: application/json" -d '{"frame":"HEX_DATA"}'
-```  
+curl -X POST [API_ENDPOINT]/task{1|2} -H "Content-Type: application/json" -d '{"frame":"HEX_DATA"}'
+``` 
+
+Your Api EndPoint is:
+```https://1wymyen3v6.execute-api.eu-north-1.amazonaws.com/Prod/%7Bproxy+%7D```
 
 **Contact for clarifications:**  
 Kevin Kinsey (CySec Strategist)  
