@@ -2,3 +2,4 @@ setup.py
 /venv
 .aws-sam
 __pycache__
+template.yaml
