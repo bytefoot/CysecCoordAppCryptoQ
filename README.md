@@ -38,7 +38,7 @@ curl -X POST [API_ENDPOINT]/task{1|2} -H "Content-Type: application/json" -d '{"
 ``` 
 
 Your Api EndPoint is:
-```https://1wymyen3v6.execute-api.eu-north-1.amazonaws.com/Prod/%7Bproxy+%7D```
+```https://a5o5alnqvhu4eleirjwu43u3hy0apxqu.lambda-url.eu-north-1.on.aws/```
 
 **Contact for clarifications:**  
 Kevin Kinsey (CySec Strategist)  

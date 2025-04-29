@@ -92,19 +92,28 @@ def task2():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-
-# New Lambda handler with proper context management
 def lambda_handler(event, context):
     try:
         # Parse API Gateway event
-        body = json.loads(event.get('body', '{}'))
+        body = event.get('body', '{}')
+        if isinstance(body, str):
+            try:
+                body = json.loads(body)
+            except json.JSONDecodeError:
+                body = {}
+        
         headers = {k.lower(): v for k, v in event.get('headers', {}).items()}
-        path = event['path'].split('/')[-1]  # Extract 'task1', 'task2', etc
+        
+        # Extract path from different possible locations in the event
+        path = event.get('path', '')
+        if not path:
+            path = event.get('rawPath', '')
+        path = path.split('/')[-1]  # Extract 'task1', 'task2', etc
         
         # Route to the appropriate function
         with app.test_request_context(
-            path=event['path'],
-            method=event['httpMethod'],
+            path=event.get('path', '/task1' if path == 'task1' else '/task2'),
+            method=event.get('httpMethod', 'POST'),
             headers=headers,
             json=body
         ):
@@ -119,9 +128,16 @@ def lambda_handler(event, context):
             else:
                 response = jsonify({"error": "Invalid endpoint"}), 404
             
+            # Ensure response is in the correct format
+            if isinstance(response, tuple):
+                response_body, status_code = response
+            else:
+                response_body = response
+                status_code = 200
+            
             return {
-                'statusCode': response[1],
-                'body': json.dumps(response[0].get_json()),
+                'statusCode': status_code,
+                'body': json.dumps(response_body.get_json()),
                 'headers': {
                     'Content-Type': 'application/json'
                 }
@@ -132,7 +148,6 @@ def lambda_handler(event, context):
             'statusCode': 500,
             'body': json.dumps({'error': str(e)})
         }
-
 # Local development
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=3000)
