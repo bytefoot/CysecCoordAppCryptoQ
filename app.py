@@ -90,6 +90,9 @@ def task2():
         # Just taking the data
         ciphertext = bytes.fromhex(request.json['frame'])
 
+        if len(ciphertext) > 80:
+            return jsonify({"error": "Frame too long"}), 400
+
         # Decrypting outer layer
         cipher2 = AES.new(config['TASK2_KEY2'], AES.MODE_CBC, iv=config['TASK2_IV2'])
         intermediate = cipher2.decrypt(ciphertext)

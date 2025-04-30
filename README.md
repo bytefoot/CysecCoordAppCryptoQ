@@ -26,6 +26,8 @@ Given:
 
 Exploit the system to retrieve the flag.
 
+The flag is of the format `CTF{<some_text>}`
+
 ### Packet Structure
 ```
 [16 bytes IV] + [16×n bytes CBC("!!ValidHeader!!" + data)] + [32 bytes HMAC]
@@ -51,6 +53,8 @@ Given:
 2. One frame with invalid header but correct stamp and contains flag
 
 Exploit the system to retrieve the flag.
+
+The flag is of the format `CTF{<some_text>}`
 
 ### Encryption Process
 1. Add company stamp → Encrypt with AES-CBC (Key1 + IV1)
